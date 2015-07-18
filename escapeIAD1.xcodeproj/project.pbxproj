@@ -15,6 +15,11 @@
 		599183191B59F6BC00854F8B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 599183181B59F6BC00854F8B /* Images.xcassets */; };
 		5991831C1B59F6BC00854F8B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5991831A1B59F6BC00854F8B /* LaunchScreen.xib */; };
 		599183281B59F6BC00854F8B /* escapeIAD1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599183271B59F6BC00854F8B /* escapeIAD1Tests.swift */; };
+		599183341B59F81500854F8B /* levelType.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 599183331B59F81500854F8B /* levelType.atlas */; };
+		599183381B59F84F00854F8B /* nicole.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 599183371B59F84F00854F8B /* nicole.atlas */; };
+		5991833A1B59F8C300854F8B /* harpx.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 599183391B59F8C300854F8B /* harpx.atlas */; };
+		5991833C1B59F8DC00854F8B /* level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991833B1B59F8DC00854F8B /* level.swift */; };
+		5991833E1B59F8EF00854F8B /* creature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991833D1B59F8EF00854F8B /* creature.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +45,11 @@
 		599183211B59F6BC00854F8B /* escapeIAD1Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = escapeIAD1Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		599183261B59F6BC00854F8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599183271B59F6BC00854F8B /* escapeIAD1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = escapeIAD1Tests.swift; sourceTree = "<group>"; };
+		599183331B59F81500854F8B /* levelType.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = levelType.atlas; sourceTree = "<group>"; };
+		599183371B59F84F00854F8B /* nicole.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = nicole.atlas; sourceTree = "<group>"; };
+		599183391B59F8C300854F8B /* harpx.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = harpx.atlas; sourceTree = "<group>"; };
+		5991833B1B59F8DC00854F8B /* level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = level.swift; sourceTree = "<group>"; };
+		5991833D1B59F8EF00854F8B /* creature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = creature.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,10 +91,13 @@
 		5991830A1B59F6BC00854F8B /* escapeIAD1 */ = {
 			isa = PBXGroup;
 			children = (
+				599183311B59F7F400854F8B /* Resources */,
 				5991830D1B59F6BC00854F8B /* AppDelegate.swift */,
 				5991830F1B59F6BC00854F8B /* GameScene.sks */,
 				599183111B59F6BC00854F8B /* GameScene.swift */,
 				599183131B59F6BC00854F8B /* GameViewController.swift */,
+				5991833B1B59F8DC00854F8B /* level.swift */,
+				5991833D1B59F8EF00854F8B /* creature.swift */,
 				599183151B59F6BC00854F8B /* Main.storyboard */,
 				599183181B59F6BC00854F8B /* Images.xcassets */,
 				5991831A1B59F6BC00854F8B /* LaunchScreen.xib */,
@@ -116,6 +129,24 @@
 				599183261B59F6BC00854F8B /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		599183311B59F7F400854F8B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				599183321B59F7FC00854F8B /* Images */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		599183321B59F7FC00854F8B /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				599183391B59F8C300854F8B /* harpx.atlas */,
+				599183371B59F84F00854F8B /* nicole.atlas */,
+				599183331B59F81500854F8B /* levelType.atlas */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,9 +229,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				599183341B59F81500854F8B /* levelType.atlas in Resources */,
 				5991831C1B59F6BC00854F8B /* LaunchScreen.xib in Resources */,
 				599183191B59F6BC00854F8B /* Images.xcassets in Resources */,
+				599183381B59F84F00854F8B /* nicole.atlas in Resources */,
 				599183101B59F6BC00854F8B /* GameScene.sks in Resources */,
+				5991833A1B59F8C300854F8B /* harpx.atlas in Resources */,
 				599183171B59F6BC00854F8B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -221,6 +255,8 @@
 			files = (
 				599183121B59F6BC00854F8B /* GameScene.swift in Sources */,
 				599183141B59F6BC00854F8B /* GameViewController.swift in Sources */,
+				5991833C1B59F8DC00854F8B /* level.swift in Sources */,
+				5991833E1B59F8EF00854F8B /* creature.swift in Sources */,
 				5991830E1B59F6BC00854F8B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
