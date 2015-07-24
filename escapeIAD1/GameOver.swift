@@ -15,8 +15,6 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
     var tryAgain = SKLabelNode(text: "Tap To Try Again")
     var sendLB = SKLabelNode()
     var door = SKSpriteNode()
-    var enabledGC = Bool()
-    var defaultLB = String()
     //var doneLB = UIButton()
     var time = 0
     
@@ -101,7 +99,7 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
 
         if GKLocalPlayer.localPlayer().authenticated {
             
-            var timeReporter = GKScore(leaderboardIdentifier: "EFTSleader_1")
+            var timeReporter = GKScore(leaderboardIdentifier: "EFTSleaderB_1")
             
             timeReporter.value = Int64(score)
             
@@ -109,7 +107,9 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
             
             GKScore.reportScores(timeArray, withCompletionHandler: {(error : NSError!) -> Void in
                 if error != nil {
+                    
                     println("error")
+                    
                 }
             })
             
@@ -130,40 +130,30 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
         
     }
     
-    func authenticateLocalPlayer() {
-        let localPlayer: GKLocalPlayer = GKLocalPlayer.localPlayer()
+    func authenticateLocalPlayer(){
         
-        localPlayer.authenticateHandler = {(ViewController, error) -> Void in
-            if((ViewController) != nil) {
+        var localPlayer = GKLocalPlayer.localPlayer()
+        
+        localPlayer.authenticateHandler = {(viewController, error) -> Void in
+            
+            if (viewController != nil) {
                 
                 let vc: UIViewController = self.view!.window!.rootViewController!
-                vc.presentViewController(ViewController, animated: true, completion: nil)
-                
-            } else if (localPlayer.authenticated) {
-                
-                self.enabledGC = true
-                
-                
-                localPlayer.loadDefaultLeaderboardIdentifierWithCompletionHandler({ (leaderboardIdentifer: String!, error: NSError!) -> Void in
-                    if error != nil {
-                        
-                        println(error)
-                        
-                    } else {
-                        
-                        self.defaultLB = leaderboardIdentifer
-                    }
-                })
-                
+                vc.presentViewController(viewController, animated: true, completion: nil)
+                println("Something Happened")
                 
             } else {
                 
-                self.enabledGC = false
-                println("Local player not authenticated, disabling game center")
-                println(error)
+                println((GKLocalPlayer.localPlayer().authenticated))
+                println("Nothing is Happening")
+                
             }
         }
+        
     }
-
+    /*
+    let vc: UIViewController = self.view!.window!.rootViewController!
+    vc.presentViewController(ViewController, animated: true, completion: nil)
+    */
     
 }
