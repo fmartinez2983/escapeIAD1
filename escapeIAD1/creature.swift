@@ -16,7 +16,7 @@ class Creature {
     var moving = false
     var angle = 0.0
     var range = 2.0
-    var yPos = CGFloat()
+    var xPos = CGFloat()
     
     init(speed:Float, alien:SKSpriteNode){
         self.speed = speed

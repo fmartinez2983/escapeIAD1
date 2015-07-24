@@ -7,8 +7,9 @@
 //
 
 import SpriteKit
+import GameKit
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class GameScene: SKScene, SKPhysicsContactDelegate{
     
     var currentLevel = 0
     var currentLevelData:NSDictionary
@@ -16,45 +17,96 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var levelType: SKSpriteNode
     var nicole: SKSpriteNode
     var harpx = SKSpriteNode()
-    //var creature:[Creature] = []
+    var creatures:[Creature] = []
     var levels:Levels
     var runningNicoleTextures = [SKTexture]()
     var stagMaxLeft: CGFloat = 0
     var stagMaxRight: CGFloat = 0
     var nicoleLeft = false
     var nicoleRight = false
-    var aliens = [Creature].self
     var endOfScreenRight = CGFloat()
     var endOfScreenLeft = CGFloat()
     var pickHarpx = false
+    var timeNode = SKLabelNode(text: "0")
+
+    var gameOver = false
+    var touchLocation = CGFloat()
+    var hero:Hero!
     
     // var nicoleSpeed = 10
     
     enum ColliderType:UInt32 {
-        case nicole = 2
-        case harpx = 1
+        case nicole = 1
+        case harpx = 2
     }
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
         endOfScreenLeft = (self.size.width / 2) * CGFloat(-1)
-        endOfScreenRight = self.size.width / 2
+        endOfScreenRight = self.size.width
         
         stagMaxRight = self.size.width/2
         stagMaxLeft = -stagMaxRight
         
         loadLevel()
         loadNicole()
-        loadHarpx()
-        // loadCreature()
+        //loadHarpx()
+        loadCreatures()
+        loadTime()
+    }
+    
+    func loadTime() {
+        
+        var actionwait = SKAction.waitForDuration(0.5)
+        var timesecond = Int()
+        var actionrun = SKAction.runBlock({
+            timesecond++
+            if timesecond == 0 {timesecond = 0}
+            self.timeNode.text = "\(timesecond)"
+        })
+        
+        timeNode.runAction(SKAction.repeatActionForever(SKAction.sequence([actionwait,actionrun])))
+        timeNode.fontName = "copperplate"
+        timeNode.fontColor = UIColor.redColor()
+        timeNode.zPosition = 8.0
+        timeNode.position = CGPointMake(100, 100)
+        addChild(timeNode)
     }
     
     
     func didBeginContact(contact: SKPhysicsContact) {
         
-        pickHarpx = true
+        var notNicole = SKPhysicsBody()
         
-        println("Picked up HarpX")
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            
+            notNicole = contact.bodyB
+            
+        } else {
+            
+            notNicole = contact.bodyA
+            
+        }
+        
+        if notNicole.categoryBitMask == ColliderType.harpx.rawValue {
+
+            pickHarpx = true
+            
+            harpx.removeFromParent()
+            
+            println("Picked up HarpX")
+            
+        }
+    }
+    
+    func reloadGame() {
+        
+        timeNode.hidden = false
+        loadLevel()
+        loadTime()
+        loadNicole()
+        loadCreatures()
+    
     }
     
     func loadLevel() {
@@ -88,6 +140,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func loadNicole() {
         
         loadTextures()
+        
+        let nicole1 = SKSpriteNode(imageNamed: "NicoleRun1")
+        hero = Hero(girl: nicole1)
         nicole.position.y -= nicole.size.height/2
         nicole.position.x = -(scene!.size.width/2) + nicole.size.width * 2
         nicole.physicsBody = SKPhysicsBody(circleOfRadius: nicole.size.width/2)
@@ -100,7 +155,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    func loadHarpx(){
+    func loadHarpx() {
+        
         harpx = SKSpriteNode(imageNamed: "harpx")
         harpx.physicsBody = SKPhysicsBody(circleOfRadius: harpx.size.width/2)
         harpx.physicsBody!.affectedByGravity = false
@@ -112,31 +168,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(harpx)
     }
     
-    func updateHarpX(){
+    
+    func loadCreatures() {
+        addCreature(named: "Alien", speed: 10.0, xPos: self.size.height/2)
+    }
+    
+    func addCreature(#named:String, speed:Float, xPos:CGFloat) {
+        var alienNode = SKSpriteNode (imageNamed: named)
+        
+        var alien1 = Creature(speed: speed, alien: alienNode)
+        
+        creatures.append(alien1)
+        
+        resetCreature(alienNode, xPos: xPos)
+        
+        alien1.xPos = alienNode.position.x
+        
+        alienNode.position.y = -85
+        alienNode.zPosition = 5.0
+        
+        addChild(alienNode)
         
     }
     
-    /*
-    func loadCreature() {
-    addCreature(named: "Alien", speed: 1.0, yPos: CGFloat(self.size.height))
+    func resetCreature(alienNode: SKSpriteNode, xPos:CGFloat) {
+        alienNode.position.x = endOfScreenRight
     }
     
-    func addCreature(#named:String, speed:Float, yPos:CGFloat) {
     
-    var creatureNode = SKSpriteNode(imageNamed: named)
-    var creature1 = Creature(speed: speed, alien: creatureNode)
-    
-    creature.append(creature1)
-    resetCreature(creatureNode, yPos: yPos)
-    creature1.yPos = creatureNode.position.y
-    creatureNode.zPosition = 3.0
-    addChild(creatureNode)
-    }
-    
-    func resetCreature(creatureNode: SKSpriteNode, yPos:CGFloat) {
-    creatureNode.position.x = endOfScreenRight
-    }
-    */
     func nicoleMove(direction:String){
         if direction == "left" {
             nicoleLeft = true
@@ -179,12 +238,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if event.allTouches()?.count == 1 {
                 let location = touch.locationInNode(self)
                 if location.x > 0{
+                    
                     nicoleMove("right")
+                    
                 } else {
+                    
                     nicoleMove("left")
+                    
                 }
             } else {
+                
                 println("pick up object")
+                
+            }
+            
+            if !gameOver {
+                
+                touchLocation = (touch.locationInView(self.view!).x * -1)+(self.size.height/2)
+                
             }
         }
     }
@@ -214,8 +285,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             cleanScreen()
             loadLevelType()
             loadBackground()
+            
+            gameOver = true
+            
+            var endScene = GameOver(size: self.size)
+            var transition = SKTransition.doorsCloseVerticalWithDuration(2.0)
+            
+            self.scene?.view?.presentScene(endScene, transition: transition)
+            
+            println("Game Over")
+            
             return true
         }
+        /*
+        if level >= 3 {
+            
+            gameOver = true
+            
+            var endScene = GameOver(size: self.size)
+            var transition = SKTransition.doorsCloseVerticalWithDuration(2.0)
+            
+            self.scene?.view?.presentScene(endScene, transition: transition)
+            
+            println("Game Over")
+            
+        }
+        */
         return false
     }
     
@@ -246,31 +341,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
     }
-    /*
-    func updateCreaturePosition(){
-    for creature1 in creature {
-    if !creature1.moving {
-    creature1.currentFrame++
-    if creature1.currentFrame > creature1.randomFrame {
-    creature1.moving = true
-    }
-    
-    } else {
-    creature1.alien.position.y = CGFloat(Double(creature1.alien.position.y) + sin(creature1.range) * creature1.range)
-    if creature1.alien.position.x > endOfScreenLeft {
-    creature1.alien.position.x -= CGFloat(creature1.speed)
-    } else {
-    creature1.alien.position.x = endOfScreenRight
-    creature1.currentFrame = 0
-    creature1.setRandomFrame()
-    creature1.moving = false
-    creature1.range += 0.1
-    }
-    }
-    }
-    
-    }
-    */
     
     override init(size: CGSize) {
         
@@ -293,10 +363,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        if !pickHarpx {
-            
-        }
-        
         updateNicolePosition()
+        updateCreaturePosition()
+    }
+    
+    func updateCreaturePosition(){
+        for alien1 in creatures {
+            if !alien1.moving {
+                alien1.currentFrame++
+                if alien1.currentFrame > alien1.randomFrame {
+                    alien1.moving = true
+                }
+                
+            } else {
+                alien1.alien.position.y = CGFloat(Double(alien1.alien.position.y) + sin(alien1.angle) * alien1.range)
+                alien1.angle += hero.speed
+                
+                if alien1.alien.position.x > endOfScreenLeft {
+                    
+                    alien1.alien.position.x -= CGFloat(alien1.speed)
+                    
+                } else {
+                    
+                    alien1.alien.position.x = endOfScreenRight
+                    alien1.currentFrame = 0
+                    alien1.setRandomFrame()
+                    alien1.moving = false
+                    alien1.range = 0.01
+                    
+                }
+            }
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

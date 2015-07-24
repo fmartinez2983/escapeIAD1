@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5951FB691B5EB7A800F6FEFA /* levelType.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 5951FB681B5EB7A800F6FEFA /* levelType.atlas */; };
+		5951FB6B1B607AE200F6FEFA /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5951FB6A1B607AE200F6FEFA /* GameKit.framework */; };
+		5951FB6D1B61ACC800F6FEFA /* nicole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5951FB6C1B61ACC800F6FEFA /* nicole.swift */; };
+		5951FB6F1B61CF3B00F6FEFA /* GameOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5951FB6E1B61CF3A00F6FEFA /* GameOver.swift */; };
 		5991830E1B59F6BC00854F8B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991830D1B59F6BC00854F8B /* AppDelegate.swift */; };
 		599183101B59F6BC00854F8B /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5991830F1B59F6BC00854F8B /* GameScene.sks */; };
 		599183121B59F6BC00854F8B /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599183111B59F6BC00854F8B /* GameScene.swift */; };
@@ -15,7 +19,6 @@
 		599183191B59F6BC00854F8B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 599183181B59F6BC00854F8B /* Images.xcassets */; };
 		5991831C1B59F6BC00854F8B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5991831A1B59F6BC00854F8B /* LaunchScreen.xib */; };
 		599183281B59F6BC00854F8B /* escapeIAD1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599183271B59F6BC00854F8B /* escapeIAD1Tests.swift */; };
-		599183341B59F81500854F8B /* levelType.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 599183331B59F81500854F8B /* levelType.atlas */; };
 		599183381B59F84F00854F8B /* nicole.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 599183371B59F84F00854F8B /* nicole.atlas */; };
 		5991833A1B59F8C300854F8B /* harpx.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 599183391B59F8C300854F8B /* harpx.atlas */; };
 		5991833C1B59F8DC00854F8B /* level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991833B1B59F8DC00854F8B /* level.swift */; };
@@ -33,6 +36,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5951FB681B5EB7A800F6FEFA /* levelType.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = levelType.atlas; sourceTree = "<group>"; };
+		5951FB6A1B607AE200F6FEFA /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		5951FB6C1B61ACC800F6FEFA /* nicole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = nicole.swift; sourceTree = "<group>"; };
+		5951FB6E1B61CF3A00F6FEFA /* GameOver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOver.swift; sourceTree = "<group>"; };
 		599183081B59F6BC00854F8B /* escapeIAD1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = escapeIAD1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5991830C1B59F6BC00854F8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5991830D1B59F6BC00854F8B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -45,7 +52,6 @@
 		599183211B59F6BC00854F8B /* escapeIAD1Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = escapeIAD1Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		599183261B59F6BC00854F8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		599183271B59F6BC00854F8B /* escapeIAD1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = escapeIAD1Tests.swift; sourceTree = "<group>"; };
-		599183331B59F81500854F8B /* levelType.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = levelType.atlas; sourceTree = "<group>"; };
 		599183371B59F84F00854F8B /* nicole.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = nicole.atlas; sourceTree = "<group>"; };
 		599183391B59F8C300854F8B /* harpx.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = harpx.atlas; sourceTree = "<group>"; };
 		5991833B1B59F8DC00854F8B /* level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = level.swift; sourceTree = "<group>"; };
@@ -57,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5951FB6B1B607AE200F6FEFA /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +80,7 @@
 		599182FF1B59F6BC00854F8B = {
 			isa = PBXGroup;
 			children = (
+				5951FB6A1B607AE200F6FEFA /* GameKit.framework */,
 				5991830A1B59F6BC00854F8B /* escapeIAD1 */,
 				599183241B59F6BC00854F8B /* escapeIAD1Tests */,
 				599183091B59F6BC00854F8B /* Products */,
@@ -98,6 +106,8 @@
 				599183131B59F6BC00854F8B /* GameViewController.swift */,
 				5991833B1B59F8DC00854F8B /* level.swift */,
 				5991833D1B59F8EF00854F8B /* creature.swift */,
+				5951FB6C1B61ACC800F6FEFA /* nicole.swift */,
+				5951FB6E1B61CF3A00F6FEFA /* GameOver.swift */,
 				599183151B59F6BC00854F8B /* Main.storyboard */,
 				599183181B59F6BC00854F8B /* Images.xcassets */,
 				5991831A1B59F6BC00854F8B /* LaunchScreen.xib */,
@@ -142,9 +152,9 @@
 		599183321B59F7FC00854F8B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				5951FB681B5EB7A800F6FEFA /* levelType.atlas */,
 				599183391B59F8C300854F8B /* harpx.atlas */,
 				599183371B59F84F00854F8B /* nicole.atlas */,
-				599183331B59F81500854F8B /* levelType.atlas */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -229,9 +239,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				599183341B59F81500854F8B /* levelType.atlas in Resources */,
 				5991831C1B59F6BC00854F8B /* LaunchScreen.xib in Resources */,
 				599183191B59F6BC00854F8B /* Images.xcassets in Resources */,
+				5951FB691B5EB7A800F6FEFA /* levelType.atlas in Resources */,
 				599183381B59F84F00854F8B /* nicole.atlas in Resources */,
 				599183101B59F6BC00854F8B /* GameScene.sks in Resources */,
 				5991833A1B59F8C300854F8B /* harpx.atlas in Resources */,
@@ -254,6 +264,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				599183121B59F6BC00854F8B /* GameScene.swift in Sources */,
+				5951FB6D1B61ACC800F6FEFA /* nicole.swift in Sources */,
+				5951FB6F1B61CF3B00F6FEFA /* GameOver.swift in Sources */,
 				599183141B59F6BC00854F8B /* GameViewController.swift in Sources */,
 				5991833C1B59F8DC00854F8B /* level.swift in Sources */,
 				5991833E1B59F8EF00854F8B /* creature.swift in Sources */,
@@ -455,6 +467,7 @@
 				5991832D1B59F6BC00854F8B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5991832E1B59F6BC00854F8B /* Build configuration list for PBXNativeTarget "escapeIAD1Tests" */ = {
 			isa = XCConfigurationList;
@@ -463,6 +476,7 @@
 				599183301B59F6BC00854F8B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
