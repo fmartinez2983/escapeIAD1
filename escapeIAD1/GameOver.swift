@@ -17,6 +17,8 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
     var door = SKSpriteNode()
     var enabledGC = Bool()
     var defaultLB = String()
+    //var doneLB = UIButton()
+    var time = 0
     
     override init(size: CGSize) {
         
@@ -30,18 +32,21 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
     }
     
     override func didMoveToView(view: SKView) {
-        
+
         self.backgroundColor = UIColor.grayColor()
         addChild(gameOverScreen)
         gameOverScreen.hidden = true
         gameOverScreen.name = "gameOver1"
         loadGameOver()
         
+        authenticateLocalPlayer()
+        
     }
     
     func loadGameOver () {
         
         gameOverScreen = SKLabelNode(text: "Your Time is: ")
+        //gameOverScreen.text = "\(timeNode)"
         gameOverScreen.position = CGPointMake(300, 175)
         gameOverScreen.zPosition = 2.0
         self.addChild(gameOverScreen)
@@ -53,16 +58,9 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
         tryAgain.runAction(SKAction .moveToY(70, duration: 1.0))
         tryAgain.zPosition = 3.0
         self.addChild(tryAgain)
-        
-        sendLB = SKLabelNode(text: "Send Time To Leaderboard")
-        sendLB.fontColor = UIColor.redColor()
-        sendLB.fontSize = 24;
-        sendLB.fontName = "copperplate"
-        sendLB.position = CGPointMake(300, -25)
-        sendLB.runAction(SKAction .moveToY(40, duration: 1.0))
-        sendLB.zPosition = 4.0
-        self.addChild(sendLB)
     }
+    
+    
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         for touch: AnyObject in touches {
@@ -92,7 +90,42 @@ class GameOver: SKScene, GKGameCenterControllerDelegate {
         
     }
     
+    func done(UIButton) {
+        
+        saveTimer(time)
+        showLeader()
+    
+    }
+    
+    func saveTimer(score:Int) {
+
+        if GKLocalPlayer.localPlayer().authenticated {
+            
+            var timeReporter = GKScore(leaderboardIdentifier: "EFTSleader_1")
+            
+            timeReporter.value = Int64(score)
+            
+            var timeArray: [GKScore] = [timeReporter]
+            
+            GKScore.reportScores(timeArray, withCompletionHandler: {(error : NSError!) -> Void in
+                if error != nil {
+                    println("error")
+                }
+            })
+            
+        }
+        
+    }
+    
+    func showLeader() {
+        var vc = self.view?.window?.rootViewController
+        var gc = GKGameCenterViewController()
+        gc.gameCenterDelegate = self
+        vc?.presentViewController(gc, animated: true, completion: nil)
+    }
+    
     func gameCenterViewControllerDidFinish(gameCenterViewController: GKGameCenterViewController!) {
+        
         gameCenterViewController.dismissViewControllerAnimated(true, completion: nil)
         
     }

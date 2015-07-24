@@ -276,6 +276,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         background.removeFromParent()
         levelType.removeFromParent()
         
+        
     }
     
     func nextScreen(level:Int) -> Bool{
