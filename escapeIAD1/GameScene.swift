@@ -9,7 +9,7 @@
 import SpriteKit
 import GameKit
 
-class GameScene: SKScene, SKPhysicsContactDelegate{
+class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelegate {
     
     var currentLevel = 0
     var currentLevelData:NSDictionary
@@ -28,10 +28,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var endOfScreenLeft = CGFloat()
     var pickHarpx = false
     var timeNode = SKLabelNode(text: "0")
-
+    var loadLB = SKLabelNode()
     var gameOver = false
     var touchLocation = CGFloat()
     var hero:Hero!
+    var timeScore = Int(0)
     
     // var nicoleSpeed = 10
     
@@ -48,6 +49,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         stagMaxRight = self.size.width/2
         stagMaxLeft = -stagMaxRight
         
+        authenticateLocalPlayer()
+        
         loadLevel()
         loadNicole()
         //loadHarpx()
@@ -58,11 +61,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func loadTime() {
         
         var actionwait = SKAction.waitForDuration(0.5)
-        var timesecond = Int()
         var actionrun = SKAction.runBlock({
-            timesecond++
-            if timesecond == 0 {timesecond = 0}
-            self.timeNode.text = "\(timesecond)"
+            
+            self.timeScore++
+            if self.timeScore == 0 {self.timeScore = 0}
+            self.timeNode.text = "\(self.timeScore)"
+            
         })
         
         timeNode.runAction(SKAction.repeatActionForever(SKAction.sequence([actionwait,actionrun])))
@@ -100,6 +104,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func reloadGame() {
+        
+        loadLB = SKLabelNode(text: "Tap for Leaderboard")
+        loadLB.fontColor = UIColor.redColor()
+        loadLB.fontSize = 24;
+        loadLB.fontName = "copperplate"
+        loadLB.position = CGPointMake(400, -25)
+        loadLB.runAction(SKAction .moveToY(50, duration: 1.0))
+        loadLB.zPosition = 4.0
+        self.addChild(loadLB)
         
         timeNode.hidden = false
         loadLevel()
@@ -257,6 +270,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 touchLocation = (touch.locationInView(self.view!).x * -1)+(self.size.height/2)
                 
             }
+            
+            let location = touch.locationInNode(self)
+            
+            if self.nodeAtPoint(location) == self.loadLB {
+
+                saveTimer(timeScore)
+                showLeader()
+                
+                println("Credits")
+                
+            }
+
         }
     }
     
@@ -287,31 +312,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             loadLevelType()
             loadBackground()
             
-            gameOver = true
-            
-            var endScene = GameOver(size: self.size)
-            var transition = SKTransition.doorsCloseVerticalWithDuration(2.0)
-            
-            self.scene?.view?.presentScene(endScene, transition: transition)
-            
-            println("Game Over")
-            
             return true
         }
-        /*
-        if level >= 3 {
+        
+        if level == 4 {
             
             gameOver = true
             
-            var endScene = GameOver(size: self.size)
-            var transition = SKTransition.doorsCloseVerticalWithDuration(2.0)
+            reloadGame()
             
-            self.scene?.view?.presentScene(endScene, transition: transition)
+            var timeShow = SKLabelNode(text: "Your time was: \(timeScore)")
+            
+            timeShow.fontColor = UIColor.redColor()
+            timeShow.fontSize = 24;
+            timeShow.fontName = "copperplate"
+            timeShow.position = CGPointMake(150, 150)
+            timeShow.zPosition = 3.0
+            self.addChild(timeShow)
             
             println("Game Over")
             
         }
-        */
+        
         return false
     }
     
@@ -396,6 +418,64 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             }
         }
     }
+
+    func saveTimer(timeScore:Int) {
+        
+        if GKLocalPlayer.localPlayer().authenticated {
+            
+            var timeReporter = GKScore(leaderboardIdentifier: "EFTSleaderB_1")
+            
+            timeReporter.value = Int64(timeScore)
+            
+            var timeArray: [GKScore] = [timeReporter]
+            
+            GKScore.reportScores(timeArray, withCompletionHandler: {(error : NSError!) -> Void in
+                if error != nil {
+                    
+                    println("error")
+                    
+                }
+            })
+            
+        }
+        
+    }
+    
+    func showLeader() {
+        var vc = self.view?.window?.rootViewController
+        var gc = GKGameCenterViewController()
+        gc.gameCenterDelegate = self
+        vc?.presentViewController(gc, animated: true, completion: nil)
+    }
+    
+    func gameCenterViewControllerDidFinish(gameCenterViewController: GKGameCenterViewController!) {
+        
+        gameCenterViewController.dismissViewControllerAnimated(true, completion: nil)
+        
+    }
+    
+    func authenticateLocalPlayer(){
+        
+        var localPlayer = GKLocalPlayer.localPlayer()
+        
+        localPlayer.authenticateHandler = {(viewController, error) -> Void in
+            
+            if (viewController != nil) {
+                
+                let vc: UIViewController = self.view!.window!.rootViewController!
+                vc.presentViewController(viewController, animated: true, completion: nil)
+                println("Something Happened")
+                
+            } else {
+                
+                println((GKLocalPlayer.localPlayer().authenticated))
+                println("Nothing is Happening")
+                
+            }
+        }
+        
+    }
+    
 }
 
 
