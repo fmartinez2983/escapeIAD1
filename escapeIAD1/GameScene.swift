@@ -37,8 +37,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     // var nicoleSpeed = 10
     
     enum ColliderType:UInt32 {
-        case nicole = 1
-        case harpx = 2
+        
+        case nicole = 2
+        case harpx = 1
+        
     }
     
     override func didMoveToView(view: SKView) {
@@ -53,7 +55,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         loadLevel()
         loadNicole()
-        //loadHarpx()
+        loadHarpx()
         loadCreatures()
         loadTime()
     }
@@ -82,7 +84,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         var notNicole = SKPhysicsBody()
         
-        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+        if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask {
             
             notNicole = contact.bodyB
             
@@ -105,21 +107,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     func reloadGame() {
         
+        /*
         loadLB = SKLabelNode(text: "Tap for Leaderboard")
         loadLB.fontColor = UIColor.redColor()
         loadLB.fontSize = 24;
         loadLB.fontName = "copperplate"
-        loadLB.position = CGPointMake(400, -25)
+        loadLB.position = CGPointMake(25, 10)
         loadLB.runAction(SKAction .moveToY(50, duration: 1.0))
         loadLB.zPosition = 4.0
         self.addChild(loadLB)
+        */
         
         timeNode.hidden = false
-        loadLevel()
-        loadTime()
-        loadNicole()
-        loadCreatures()
-    
+        
     }
     
     func loadLevel() {
@@ -148,6 +148,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         levelType.position.y = -50
         levelType.zPosition = 2.0
         scene?.addChild(levelType)
+        
     }
     
     func loadNicole() {
@@ -179,14 +180,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         harpx.position.y = -100
         harpx.zPosition = 4.0
         addChild(harpx)
+        
     }
     
     
     func loadCreatures() {
+        
         addCreature(named: "Alien", speed: 10.0, xPos: self.size.height/2)
+        
     }
     
     func addCreature(#named:String, speed:Float, xPos:CGFloat) {
+        
         var alienNode = SKSpriteNode (imageNamed: named)
         
         var alien1 = Creature(speed: speed, alien: alienNode)
@@ -205,17 +210,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     func resetCreature(alienNode: SKSpriteNode, xPos:CGFloat) {
+        
         alienNode.position.x = endOfScreenRight
     }
     
     
     func nicoleMove(direction:String){
+        
         if direction == "left" {
+            
             nicoleLeft = true
             nicole.xScale = -1
             nicoleRight = false
             runNicole()
+            
         } else {
+            
             nicoleRight = true
             nicole.xScale = 1
             nicoleLeft = false
@@ -227,10 +237,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     func runNicole(){
         
         nicole.runAction(SKAction.repeatActionForever(SKAction.animateWithTextures(runningNicoleTextures, timePerFrame: 0.1, resize: false, restore: true)))
+        
     }
     
     
     func loadTextures() {
+        
         var nicoleAtlas = SKTextureAtlas(named: "nicole")
         
         for i in 1...2 {
@@ -249,7 +261,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         for touch in (touches as! Set<UITouch>) {
             
             if event.allTouches()?.count == 1 {
+                
                 let location = touch.locationInNode(self)
+                
                 if location.x > 0{
                     
                     nicoleMove("right")
@@ -259,6 +273,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                     nicoleMove("left")
                     
                 }
+                
             } else {
                 
                 println("pick up object")
@@ -290,9 +305,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         nicoleLeft = false
         nicoleRight = false
         nicole.removeAllActions()
+        
     }
     
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+        
         cancelMoves()
     }
     
@@ -301,11 +318,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         background.removeFromParent()
         levelType.removeFromParent()
         
-        
     }
     
     func nextScreen(level:Int) -> Bool{
+        
         if level >= 0 && level < levels.data.count {
+            
             currentLevel = level
             currentLevelData = levels.data[currentLevel]
             cleanScreen()
@@ -319,16 +337,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             
             gameOver = true
             
-            reloadGame()
-            
             var timeShow = SKLabelNode(text: "Your time was: \(timeScore)")
             
             timeShow.fontColor = UIColor.redColor()
             timeShow.fontSize = 24;
             timeShow.fontName = "copperplate"
-            timeShow.position = CGPointMake(150, 150)
+            timeShow.position = CGPointMake(25, 50)
             timeShow.zPosition = 3.0
             self.addChild(timeShow)
+            
+            timeNode.removeFromParent()
+            
+            loadLB = SKLabelNode(text: "Tap for Leaderboard")
+            loadLB.fontColor = UIColor.redColor()
+            loadLB.fontSize = 24;
+            loadLB.fontName = "copperplate"
+            loadLB.position = CGPointMake(25, 10)
+            loadLB.zPosition = 4.0
+            self.addChild(loadLB)
             
             println("Game Over")
             
@@ -338,29 +364,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     func updateNicolePosition() {
+        
         if nicole.position.x < stagMaxLeft {
+            
             if nextScreen(currentLevel - 1) {
+                
                 nicole.position.x = stagMaxRight
                 println("Moving Right")
+                
             }
             if nicoleLeft {
+                
                 return
+                
             }
         }
         if nicole.position.x > stagMaxRight{
+            
             if nextScreen(currentLevel + 1) {
+                
                 nicole.position.x = stagMaxLeft
                 println("Moving Left")
+                
             }
+            
             if nicoleRight {
+                
                 return
+            
             }
         }
         
         if nicoleLeft {
+            
             nicole.position.x -= 5
+            
         } else if nicoleRight {
+            
             nicole.position.x += 5
+            
         }
         
     }
@@ -380,7 +422,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     required init?(coder aDecoder: NSCoder) {
+        
         fatalError("init(coder:) has not been implemented")
+        
     }
     
     override func update(currentTime: CFTimeInterval) {
@@ -388,9 +432,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         updateNicolePosition()
         updateCreaturePosition()
+        
     }
     
     func updateCreaturePosition(){
+        
         for alien1 in creatures {
             if !alien1.moving {
                 alien1.currentFrame++
@@ -430,22 +476,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             var timeArray: [GKScore] = [timeReporter]
             
             GKScore.reportScores(timeArray, withCompletionHandler: {(error : NSError!) -> Void in
+                
                 if error != nil {
                     
                     println("error")
                     
                 }
             })
-            
         }
-        
     }
     
     func showLeader() {
+        
         var vc = self.view?.window?.rootViewController
         var gc = GKGameCenterViewController()
         gc.gameCenterDelegate = self
         vc?.presentViewController(gc, animated: true, completion: nil)
+        
     }
     
     func gameCenterViewControllerDidFinish(gameCenterViewController: GKGameCenterViewController!) {
@@ -473,9 +520,125 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 
             }
         }
-        
     }
     
+    func checkAchievements() {
+        var identifier : String? = nil
+        var index : Int!
+        var percentComplete : Double = 0
+        switch(timeScore)
+        {
+        case 1:
+            identifier = "EFT001"
+            index = 0 // Index for array made in loadAchievementsWithCompletionHandler
+            percentComplete = 100.0
+        case 2:
+            identifier = "EFT002"
+            index = 1
+            percentComplete = 100.0
+        case 3:
+            identifier = "EFT003"
+            index = 2
+            percentComplete = 100.0
+        case 4:
+            identifier = "EFT004"
+            index = 3
+            percentComplete = 100.0
+        case 5:
+            identifier = "EFT005"
+            index = 4
+            percentComplete = 100.0
+        case 6:
+            identifier = "EFT006"
+            index = 4
+            percentComplete = 100.0
+            
+        default:
+            identifier = nil
+            
+        }
+        if identifier != nil {
+            
+            let achievement = GKAchievement(identifier: identifier)
+            achievement.showsCompletionBanner = true
+            
+            GKAchievement.loadAchievementsWithCompletionHandler({(achievement, var error) in
+                
+                if (error != nil) {
+                    
+                   
+                }
+            })
+            
+            
+        }
+    }
+    
+    let gameCenterPlayer=GKLocalPlayer.localPlayer()
+    
+    var canUseGameCenter:Bool = false {
+        
+        didSet{if canUseGameCenter == true {
+            
+            gameCenterLoadAchievements()}
+        
+        }}
+    
+    var gameCenterAchievements=[String:GKAchievement]()
+    
+        func gameCenterLoadAchievements(){
+        
+        var allAchievements=[GKAchievement]()
+        
+        GKAchievement.loadAchievementsWithCompletionHandler({ (allAchievements, error:NSError!) -> Void in
+            
+            if error != nil{
+                
+                println("Could not load!")
+                
+            } else {
+                
+                for anAchievement in allAchievements  {
+                    
+                    if let oneAchievement = anAchievement as? GKAchievement {
+                        
+                        self.gameCenterAchievements[oneAchievement.identifier]=oneAchievement}
+                    
+                }
+            }
+        })
+    }
+    
+    func gameCenterAddProgressToAnAchievement(progress:Double,achievementID:String) {
+        if canUseGameCenter == true {
+            
+            var lookupAchievement:GKAchievement? = gameCenterAchievements[achievementID]
+            
+            if let achievement = lookupAchievement {
+                
+                if achievement.percentComplete != 100 {
+                    
+                    achievement.percentComplete = progress
+                    if progress == 100.0  {achievement.showsCompletionBanner=true}
+                    
+                    GKAchievement.reportAchievements([achievement], withCompletionHandler:  {(var error:NSError!) -> Void in
+                        if error != nil {
+                            println("No Progress")
+                        }
+                    })
+                } else {
+                    
+                    println("DEBUG: Achievement (\(achievementID)) working")}
+                
+            } else {
+                
+                println("No achievement with ID (\(achievementID)) was found.")
+                gameCenterAchievements[achievementID] = GKAchievement(identifier: achievementID)
+                gameCenterAddProgressToAnAchievement(progress, achievementID: achievementID)
+                
+            }
+        }
+    }
 }
 
 
