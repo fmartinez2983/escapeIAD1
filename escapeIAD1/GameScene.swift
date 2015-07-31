@@ -33,6 +33,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var touchLocation = CGFloat()
     var hero:Hero!
     var timeScore = Int(0)
+    var identifier : String? = nil
+    var index : Int!
+    var percentComplete : Double = 0
+    var progressInLevelAchievement = Bool()
     
     // var nicoleSpeed = 10
     
@@ -68,6 +72,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             self.timeScore++
             if self.timeScore == 0 {self.timeScore = 0}
             self.timeNode.text = "\(self.timeScore)"
+            
+            if self.timeScore <= 90 {
+                
+               // GKAchievement
+               // GKNotificationBanner.
+                
+            } else if self.timeScore <= 60 {
+                
+                // GKAchievement
+                // GKNotificationBanner.
+                
+            } else if self.timeScore <= 40 {
+                
+                // GKAchievement
+                // GKNotificationBanner.
+                
+            }
             
         })
         
@@ -347,6 +368,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             self.addChild(timeShow)
             
             timeNode.removeFromParent()
+
             
             loadLB = SKLabelNode(text: "Tap for Leaderboard")
             loadLB.fontColor = UIColor.redColor()
@@ -523,35 +545,54 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     func checkAchievements() {
-        var identifier : String? = nil
-        var index : Int!
-        var percentComplete : Double = 0
+
         switch(timeScore)
+            
         {
         case 1:
             identifier = "EFT001"
-            index = 0 // Index for array made in loadAchievementsWithCompletionHandler
+            //index = 0
             percentComplete = 100.0
         case 2:
-            identifier = "EFT002"
-            index = 1
-            percentComplete = 100.0
+            
+            if timeScore <= 90 {
+                
+                identifier = "EFT002"
+                //index = 1
+                percentComplete = 100.0
+            }
+            
         case 3:
-            identifier = "EFT003"
-            index = 2
-            percentComplete = 100.0
+
+            if timeScore <= 60 {
+                
+                identifier = "EFT003"
+                //index = 2
+                percentComplete = 100.0
+            }
+            
         case 4:
-            identifier = "EFT004"
-            index = 3
-            percentComplete = 100.0
+            
+            if timeScore <= 40 {
+                
+                identifier = "EFT004"
+                //index = 3
+                percentComplete = 100.0
+            }
+            
         case 5:
             identifier = "EFT005"
-            index = 4
+            //index = 4
             percentComplete = 100.0
         case 6:
-            identifier = "EFT006"
-            index = 4
-            percentComplete = 100.0
+            
+            if currentLevel == 4 {
+                
+                identifier = "EFT006"
+                //index = 4
+                percentComplete = 100.0
+                progressInLevelAchievement = true
+            }
             
         default:
             identifier = nil
@@ -566,11 +607,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 
                 if (error != nil) {
                     
+                    println("nothing is happening")
                    
                 }
             })
-            
-            
         }
     }
     
