@@ -17,6 +17,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var levelType: SKSpriteNode
     var nicole: SKSpriteNode
     var harpx = SKSpriteNode()
+    var alienNode = SKSpriteNode()
     var creatures:[Creature] = []
     var levels:Levels
     var runningNicoleTextures = [SKTexture]()
@@ -42,8 +43,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     enum ColliderType:UInt32 {
         
-        case nicole = 2
-        case harpx = 1
+        case nicole = 1
+        case creature = 2
         
     }
     
@@ -59,8 +60,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         loadLevel()
         loadNicole()
-        loadHarpx()
         loadCreatures()
+       // loadHarpx()
         loadTime()
     }
     
@@ -73,23 +74,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             if self.timeScore == 0 {self.timeScore = 0}
             self.timeNode.text = "\(self.timeScore)"
             
-            if self.timeScore <= 90 {
-                
-               // GKAchievement
-               // GKNotificationBanner.
-                
-            } else if self.timeScore <= 60 {
-                
-                // GKAchievement
-                // GKNotificationBanner.
-                
-            } else if self.timeScore <= 40 {
-                
-                // GKAchievement
-                // GKNotificationBanner.
-                
-            }
-            
         })
         
         timeNode.runAction(SKAction.repeatActionForever(SKAction.sequence([actionwait,actionrun])))
@@ -100,24 +84,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         addChild(timeNode)
     }
     
-    
+/*
     func didBeginContact(contact: SKPhysicsContact) {
         
-        var notNicole = SKPhysicsBody()
+        var Nicole = SKPhysicsBody()
+        var HarpX = SKPhysicsBody()
         
-        if contact.bodyA.categoryBitMask > contact.bodyB.categoryBitMask {
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             
-            notNicole = contact.bodyB
-            
+            Nicole = contact.bodyA
+            HarpX = contact.bodyB
+    
         } else {
             
-            notNicole = contact.bodyA
+            Nicole = contact.bodyB
+            HarpX = contact.bodyA
             
         }
         
-        if notNicole.categoryBitMask == ColliderType.harpx.rawValue {
-
-            pickHarpx = true
+        if HarpX.categoryBitMask == ColliderType.harpx.rawValue {
             
             harpx.removeFromParent()
             
@@ -125,19 +110,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             
         }
     }
+*/
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        
+        var notNicole = SKPhysicsBody()
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            
+            notNicole = contact.bodyB
+            
+        } else {
+            
+            notNicole = contact.bodyA
+        }
+        
+        if notNicole.categoryBitMask == ColliderType.creature.rawValue {
+            
+            nicole.removeFromParent()
+            
+            println("ROAR! Game Over")
+            
+            reloadGame()
+        }
+    }
     
     func reloadGame() {
-        
-        /*
-        loadLB = SKLabelNode(text: "Tap for Leaderboard")
-        loadLB.fontColor = UIColor.redColor()
-        loadLB.fontSize = 24;
-        loadLB.fontName = "copperplate"
-        loadLB.position = CGPointMake(25, 10)
-        loadLB.runAction(SKAction .moveToY(50, duration: 1.0))
-        loadLB.zPosition = 4.0
-        self.addChild(loadLB)
-        */
         
         timeNode.hidden = false
         
@@ -176,15 +174,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         loadTextures()
         
-        let nicole1 = SKSpriteNode(imageNamed: "NicoleRun1")
+        let nicole1 = SKSpriteNode(imageNamed: "BNicoleRun0")
         hero = Hero(girl: nicole1)
         nicole.position.y -= nicole.size.height/2
         nicole.position.x = -(scene!.size.width/2) + nicole.size.width * 2
         nicole.physicsBody = SKPhysicsBody(circleOfRadius: nicole.size.width/2)
         nicole.physicsBody!.affectedByGravity = false
         nicole.physicsBody!.categoryBitMask = ColliderType.nicole.rawValue
-        nicole.physicsBody!.contactTestBitMask = ColliderType.harpx.rawValue;
-        nicole.physicsBody!.collisionBitMask = ColliderType.harpx.rawValue;
+        nicole.physicsBody!.contactTestBitMask = ColliderType.creature.rawValue;
+        nicole.physicsBody!.collisionBitMask = ColliderType.creature.rawValue;
         nicole.zPosition = 3.0
         addChild(nicole)
         
@@ -195,11 +193,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         harpx = SKSpriteNode(imageNamed: "harpx")
         harpx.physicsBody = SKPhysicsBody(circleOfRadius: harpx.size.width/2)
         harpx.physicsBody!.affectedByGravity = false
-        harpx.physicsBody!.categoryBitMask = ColliderType.harpx.rawValue
-        harpx.physicsBody!.contactTestBitMask = ColliderType.nicole.rawValue
-        harpx.physicsBody!.collisionBitMask = ColliderType.nicole.rawValue
         harpx.position.y = -100
         harpx.zPosition = 4.0
+        
         addChild(harpx)
         
     }
@@ -213,9 +209,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     func addCreature(#named:String, speed:Float, xPos:CGFloat) {
         
-        var alienNode = SKSpriteNode (imageNamed: named)
+        alienNode = SKSpriteNode (imageNamed: named)
         
         var alien1 = Creature(speed: speed, alien: alienNode)
+        
+        alienNode.physicsBody = SKPhysicsBody(circleOfRadius: alienNode.size.width/2)
+        alienNode.physicsBody!.affectedByGravity = false
+        alienNode.physicsBody!.categoryBitMask = ColliderType.creature.rawValue
+        alienNode.physicsBody!.contactTestBitMask = ColliderType.nicole.rawValue
+        alienNode.physicsBody!.collisionBitMask = ColliderType.nicole.rawValue
         
         creatures.append(alien1)
         
@@ -264,11 +266,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     func loadTextures() {
         
-        var nicoleAtlas = SKTextureAtlas(named: "nicole")
+        var nicoleAtlas = SKTextureAtlas(named: "BNicole")
         
         for i in 1...2 {
             
-            var textureName = "NicoleRun1"
+            var textureName = "BNicoleRun0"
             var temp = nicoleAtlas.textureNamed(textureName)
             runningNicoleTextures.append(temp)
             
@@ -317,7 +319,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 println("Credits")
                 
             }
-
         }
     }
     
@@ -368,7 +369,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             self.addChild(timeShow)
             
             timeNode.removeFromParent()
-
+            harpx.removeFromParent()
+            nicole.removeFromParent()
             
             loadLB = SKLabelNode(text: "Tap for Leaderboard")
             loadLB.fontColor = UIColor.redColor()
@@ -435,7 +437,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         self.currentLevelData = [:]
         self.levels = Levels()
         self.background = SKSpriteNode()
-        self.nicole = SKSpriteNode(texture: SKTexture(imageNamed: "NicoleRun1"))
+        self.nicole = SKSpriteNode(texture: SKTexture(imageNamed: "BNicoleRun0"))
         self.nicole.name = "Nicole"
         self.levelType = SKSpriteNode()
         self.harpx = SKSpriteNode()

@@ -10,6 +10,7 @@
 		5951FB691B5EB7A800F6FEFA /* levelType.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 5951FB681B5EB7A800F6FEFA /* levelType.atlas */; };
 		5951FB6B1B607AE200F6FEFA /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5951FB6A1B607AE200F6FEFA /* GameKit.framework */; };
 		5951FB6D1B61ACC800F6FEFA /* nicole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5951FB6C1B61ACC800F6FEFA /* nicole.swift */; };
+		597D05F71B72CD5C0060A789 /* BNicole.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 597D05F61B72CD5C0060A789 /* BNicole.atlas */; };
 		5991830E1B59F6BC00854F8B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991830D1B59F6BC00854F8B /* AppDelegate.swift */; };
 		599183101B59F6BC00854F8B /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5991830F1B59F6BC00854F8B /* GameScene.sks */; };
 		599183121B59F6BC00854F8B /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599183111B59F6BC00854F8B /* GameScene.swift */; };
@@ -38,6 +39,7 @@
 		5951FB681B5EB7A800F6FEFA /* levelType.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = levelType.atlas; sourceTree = "<group>"; };
 		5951FB6A1B607AE200F6FEFA /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		5951FB6C1B61ACC800F6FEFA /* nicole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = nicole.swift; sourceTree = "<group>"; };
+		597D05F61B72CD5C0060A789 /* BNicole.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = BNicole.atlas; sourceTree = "<group>"; };
 		599183081B59F6BC00854F8B /* escapeIAD1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = escapeIAD1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5991830C1B59F6BC00854F8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5991830D1B59F6BC00854F8B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 		599183321B59F7FC00854F8B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				597D05F61B72CD5C0060A789 /* BNicole.atlas */,
 				5951FB681B5EB7A800F6FEFA /* levelType.atlas */,
 				599183391B59F8C300854F8B /* harpx.atlas */,
 				599183371B59F84F00854F8B /* nicole.atlas */,
@@ -241,6 +244,7 @@
 				599183191B59F6BC00854F8B /* Images.xcassets in Resources */,
 				5951FB691B5EB7A800F6FEFA /* levelType.atlas in Resources */,
 				599183381B59F84F00854F8B /* nicole.atlas in Resources */,
+				597D05F71B72CD5C0060A789 /* BNicole.atlas in Resources */,
 				599183101B59F6BC00854F8B /* GameScene.sks in Resources */,
 				5991833A1B59F8C300854F8B /* harpx.atlas in Resources */,
 				599183171B59F6BC00854F8B /* Main.storyboard in Resources */,
