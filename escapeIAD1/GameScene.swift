@@ -45,11 +45,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         case nicole = 1
         case creature = 2
+        case harpx = 3
         
     }
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
+        
+        self.physicsWorld.contactDelegate = self
+        
         endOfScreenLeft = (self.size.width / 2) * CGFloat(-1)
         endOfScreenRight = self.size.width
         
@@ -61,7 +65,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         loadLevel()
         loadNicole()
         loadCreatures()
-       // loadHarpx()
+        loadHarpx()
         loadTime()
     }
     
@@ -84,34 +88,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         addChild(timeNode)
     }
     
-/*
-    func didBeginContact(contact: SKPhysicsContact) {
-        
-        var Nicole = SKPhysicsBody()
-        var HarpX = SKPhysicsBody()
-        
-        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-            
-            Nicole = contact.bodyA
-            HarpX = contact.bodyB
-    
-        } else {
-            
-            Nicole = contact.bodyB
-            HarpX = contact.bodyA
-            
-        }
-        
-        if HarpX.categoryBitMask == ColliderType.harpx.rawValue {
-            
-            harpx.removeFromParent()
-            
-            println("Picked up HarpX")
-            
-        }
-    }
-*/
-    
     func didBeginContact(contact: SKPhysicsContact) {
         
         var notNicole = SKPhysicsBody()
@@ -132,6 +108,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             println("ROAR! Game Over")
             
             reloadGame()
+        
+        } else if notNicole.categoryBitMask == ColliderType.harpx.rawValue {
+            
+            harpx.removeFromParent()
+            
+            println("HarpX ready!")
+            
         }
     }
     
@@ -183,6 +166,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         nicole.physicsBody!.categoryBitMask = ColliderType.nicole.rawValue
         nicole.physicsBody!.contactTestBitMask = ColliderType.creature.rawValue;
         nicole.physicsBody!.collisionBitMask = ColliderType.creature.rawValue;
+        nicole.physicsBody!.contactTestBitMask = ColliderType.harpx.rawValue;
+        nicole.physicsBody!.collisionBitMask = ColliderType.harpx.rawValue;
         nicole.zPosition = 3.0
         addChild(nicole)
         
@@ -191,8 +176,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     func loadHarpx() {
         
         harpx = SKSpriteNode(imageNamed: "harpx")
-        harpx.physicsBody = SKPhysicsBody(circleOfRadius: harpx.size.width/2)
+        harpx.physicsBody = SKPhysicsBody(circleOfRadius: harpx.size.width/3)
         harpx.physicsBody!.affectedByGravity = false
+        harpx.physicsBody!.categoryBitMask = ColliderType.harpx.rawValue
+        harpx.physicsBody!.contactTestBitMask = ColliderType.nicole.rawValue;
+        harpx.physicsBody!.collisionBitMask = ColliderType.nicole.rawValue;
         harpx.position.y = -100
         harpx.zPosition = 4.0
         
@@ -203,7 +191,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     func loadCreatures() {
         
-        addCreature(named: "Alien", speed: 10.0, xPos: self.size.height/2)
+        addCreature(named: "Alien", speed: 5.0, xPos: self.size.height/2)
         
     }
     
@@ -397,12 +385,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 println("Moving Right")
                 
             }
+            
             if nicoleLeft {
                 
                 return
                 
             }
         }
+        
         if nicole.position.x > stagMaxRight{
             
             if nextScreen(currentLevel + 1) {
@@ -555,6 +545,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             identifier = "EFT001"
             //index = 0
             percentComplete = 100.0
+            
         case 2:
             
             if timeScore <= 90 {
@@ -586,6 +577,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             identifier = "EFT005"
             //index = 4
             percentComplete = 100.0
+            
         case 6:
             
             if currentLevel == 4 {
@@ -652,6 +644,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     func gameCenterAddProgressToAnAchievement(progress:Double,achievementID:String) {
+        
         if canUseGameCenter == true {
             
             var lookupAchievement:GKAchievement? = gameCenterAchievements[achievementID]
