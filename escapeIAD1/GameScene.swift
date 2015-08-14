@@ -18,6 +18,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var nicole: SKSpriteNode
     var harpx = SKSpriteNode(imageNamed: "harpx")
     var alienNode = SKSpriteNode()
+    var currentCreature:Int = 1
     var creatures:[Creature] = []
     var levels:Levels
     var runningNicoleTextures = [SKTexture]()
@@ -38,17 +39,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var index : Int!
     var percentComplete : Double = 0
     var progressInLevelAchievement = Bool()
-    
+    var hide = SKLabelNode()
     let fire = SKSpriteNode(imageNamed: "harpx")
     var fireIt = false
-    
-    // var nicoleSpeed = 10
     
     enum ColliderType:UInt32 {
         
         case nicole = 1
         case creature = 2
-      //  case harpx = 3
+        case fire = 3
+        case levelType = 4
         
     }
     
@@ -71,10 +71,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         self.addChild(harpx)
         self.addChild(fire)
         
-        
+       // loadHidingSpot1()
         loadLevel()
         loadNicole()
-        //loadCreatures()
+        loadCreatures()
         loadHarpx()
         loadTime()
     }
@@ -118,13 +118,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             println("ROAR! Game Over")
             
             reloadGame()
-        /*
-        } else if notNicole.categoryBitMask == ColliderType.harpx.rawValue {
+        }
+        
+        if notNicole.categoryBitMask == ColliderType.fire.rawValue {
             
-            harpx.removeFromParent()
+            alienNode.removeFromParent()
             
-            println("HarpX ready!")
-           */
+            println("You killed the creature!")
+            
+        }
+        
+        if notNicole.categoryBitMask == ColliderType.levelType.rawValue {
+            
+            loadHide()
+            
+            println("Nicole can hide")
+            
         }
     }
     
@@ -153,11 +162,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
     }
     
+    func loadHide() {
+        
+        hide = SKLabelNode(text: "HIDE!")
+        hide.position = CGPointMake(-150, -150)
+        hide.fontColor = UIColor.redColor()
+        hide.fontSize = 24;
+        hide.fontName = "copperplate"
+        hide.zPosition = 5.0
+        addChild(hide)
+        
+    }
+    
     func loadLevelType() {
         
         var levelTypeInfo = currentLevelData["type"] as! String
         levelType = SKSpriteNode(imageNamed: levelTypeInfo)
         levelType.name = "level_type"
+        levelType.physicsBody = SKPhysicsBody(circleOfRadius: nicole.size.width/2)
+        levelType.physicsBody!.affectedByGravity = false
+        levelType.physicsBody!.pinned = true
+        levelType.physicsBody!.categoryBitMask = ColliderType.levelType.rawValue
+        levelType.physicsBody!.contactTestBitMask = ColliderType.nicole.rawValue;
+        levelType.physicsBody!.collisionBitMask = ColliderType.nicole.rawValue;
         levelType.position.y = -50
         levelType.zPosition = 2.0
         scene?.addChild(levelType)
@@ -170,15 +197,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         let nicole1 = SKSpriteNode(imageNamed: "BNicoleRun0")
         hero = Hero(girl: nicole1)
-        nicole.position.y -= nicole.size.height/2
+        nicole.position.y = -50
         nicole.position.x = -(scene!.size.width/2) + nicole.size.width * 2
         nicole.physicsBody = SKPhysicsBody(circleOfRadius: nicole.size.width/2)
         nicole.physicsBody!.affectedByGravity = false
         nicole.physicsBody!.categoryBitMask = ColliderType.nicole.rawValue
         nicole.physicsBody!.contactTestBitMask = ColliderType.creature.rawValue;
         nicole.physicsBody!.collisionBitMask = ColliderType.creature.rawValue;
-        //nicole.physicsBody!.contactTestBitMask = ColliderType.harpx.rawValue;
-        //nicole.physicsBody!.collisionBitMask = ColliderType.harpx.rawValue;
         nicole.zPosition = 3.0
         addChild(nicole)
         
@@ -201,7 +226,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         addCreature(named: "Alien", speed: 5.0, xPos: self.size.height/2)
         
     }
-    
+/*
+    func loadHidingSpot1() {
+        
+        hide = SKLabelNode(text: "*")
+        hide.position = CGPointMake(-100, -80)
+        hide.zPosition = 5.0
+        addChild(hide)
+        
+    }
+*/
     func addCreature(#named:String, speed:Float, xPos:CGFloat) {
         
         alienNode = SKSpriteNode (imageNamed: named)
@@ -213,6 +247,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         alienNode.physicsBody!.categoryBitMask = ColliderType.creature.rawValue
         alienNode.physicsBody!.contactTestBitMask = ColliderType.nicole.rawValue
         alienNode.physicsBody!.collisionBitMask = ColliderType.nicole.rawValue
+        alienNode.physicsBody!.contactTestBitMask = ColliderType.fire.rawValue
+        alienNode.physicsBody!.collisionBitMask = ColliderType.fire.rawValue
         
         creatures.append(alien1)
         
@@ -286,6 +322,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 self.fireIt = true
                 self.fire.position = self.nicole.position
                 self.fire.hidden = false
+                self.fire.physicsBody = SKPhysicsBody(circleOfRadius: fire.size.width/2)
+                self.fire.physicsBody!.affectedByGravity = false
+                self.fire.physicsBody!.categoryBitMask = ColliderType.fire.rawValue
+                self.fire.physicsBody!.contactTestBitMask = ColliderType.creature.rawValue
+                self.fire.physicsBody!.collisionBitMask = ColliderType.creature.rawValue
             }
             
             if event.allTouches()?.count == 1 {
@@ -342,6 +383,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         background.removeFromParent()
         levelType.removeFromParent()
+        resetCreature(alienNode, xPos: -85)
         
     }
     
@@ -351,10 +393,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             
             currentLevel = level
             currentLevelData = levels.data[currentLevel]
+
+           // loadHidingSpot1()
             cleanScreen()
             loadLevelType()
             loadBackground()
-            loadCreatures()
             
             return true
         }
@@ -466,19 +509,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if self.fireIt{
             let missileSpeed:CGFloat = 50
             let blastRadius = 25
-            var dX = (nicole.position.x - fire.position.x)
-            var dY = (nicole.position.y - fire.position.y)
+            var dX = (harpx.position.x - fire.position.x)
+            var dY = (harpx.position.y - fire.position.y)
             
-            let action = SKAction.moveBy(CGVectorMake(dX*missileSpeed/2500, dY*missileSpeed/2500), duration: 1.0)
+            let action = SKAction.moveBy(CGVectorMake(dX, dY), duration: 1.0)
             
             self.fire.runAction(action)
             
-            if (Int(abs(dX)) < blastRadius) && (Int(abs(dY)) < blastRadius)
-            {fire.position = harpx.position
-                let action = SKAction.moveToX(100, duration: 1.0)
-                harpx.physicsBody!.velocity = CGVectorMake(100,100)
+            if (Int(abs(dX)) < blastRadius) && (Int(abs(dY)) < blastRadius){
+                
+                fire.position = harpx.position
+                let action = SKAction.moveToX(1000, duration: 1.0)
+                //harpx.physicsBody!.velocity = CGVectorMake(100,100)
                 harpx.runAction(action)
                 fire.runAction(action)
+                
             }
         }
         
