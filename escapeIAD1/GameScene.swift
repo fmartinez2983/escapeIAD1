@@ -42,6 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var hide = SKLabelNode()
     let fire = SKSpriteNode(imageNamed: "harpx")
     var fireIt = false
+    var reload = SKLabelNode()
     
     enum ColliderType:UInt32 {
         
@@ -68,10 +69,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         fire.hidden = true
         fire.zPosition = 7.0
         
-        self.addChild(harpx)
         self.addChild(fire)
-        
-       // loadHidingSpot1()
+
         loadLevel()
         loadNicole()
         loadCreatures()
@@ -98,6 +97,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         addChild(timeNode)
     }
     
+    func reloadGame() {
+        
+        reload = SKLabelNode(text: "Try Again?")
+        reload.fontColor = UIColor.redColor()
+        reload.fontSize = 24;
+        reload.fontName = "copperplate"
+        reload.position = CGPointMake(-100, -25)
+        reload.zPosition = 5.0
+        self.addChild(reload)
+    
+    }
+    
     func didBeginContact(contact: SKPhysicsContact) {
         
         var notNicole = SKPhysicsBody()
@@ -114,10 +125,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if notNicole.categoryBitMask == ColliderType.creature.rawValue {
             
             nicole.removeFromParent()
+            timeHide()
+            reloadGame()
             
             println("ROAR! Game Over")
             
-            reloadGame()
         }
         
         if notNicole.categoryBitMask == ColliderType.fire.rawValue {
@@ -134,13 +146,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             
             println("Nicole can hide")
             
+        } else {
+            
+            cancelHide()
+            
         }
     }
     
     
-    func reloadGame() {
+    func timeHide() {
         
-        timeNode.hidden = false
+        timeNode.hidden = true
         
     }
     
@@ -169,7 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         hide.fontColor = UIColor.redColor()
         hide.fontSize = 24;
         hide.fontName = "copperplate"
-        hide.zPosition = 5.0
+        hide.zPosition = 8.0
         addChild(hide)
         
     }
@@ -199,7 +215,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         hero = Hero(girl: nicole1)
         nicole.position.y = -50
         nicole.position.x = -(scene!.size.width/2) + nicole.size.width * 2
-        nicole.physicsBody = SKPhysicsBody(circleOfRadius: nicole.size.width/2)
+        nicole.physicsBody = SKPhysicsBody(circleOfRadius: nicole.size.width/4)
         nicole.physicsBody!.affectedByGravity = false
         nicole.physicsBody!.categoryBitMask = ColliderType.nicole.rawValue
         nicole.physicsBody!.contactTestBitMask = ColliderType.creature.rawValue;
@@ -317,12 +333,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             let location = touch.locationInNode(self)
             let thisNode = self.nodeAtPoint(location)
             
-            if (thisNode.name == self.fire.name){
+            if (thisNode.name == self.fire.name) {
                 
                 self.fireIt = true
                 self.fire.position = self.nicole.position
+                self.fire.position.x = 10
+                self.fire.position.y = -60
                 self.fire.hidden = false
-                self.fire.physicsBody = SKPhysicsBody(circleOfRadius: fire.size.width/2)
+                self.fire.physicsBody = SKPhysicsBody(circleOfRadius: fire.size.width/10)
                 self.fire.physicsBody!.affectedByGravity = false
                 self.fire.physicsBody!.categoryBitMask = ColliderType.fire.rawValue
                 self.fire.physicsBody!.contactTestBitMask = ColliderType.creature.rawValue
@@ -333,7 +351,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 
                 let location = touch.locationInNode(self)
                 
-                if location.x > 0{
+                if location.x > 0 {
                     
                     nicoleMove("right")
                     
@@ -343,15 +361,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                     
                 }
                 
-            } else {
+            }
+            
+            if self.nodeAtPoint(location) == self.hide {
                 
-                println("pick up object")
+                nicole.removeFromParent()
+                
+                println("Hide now!")
+                
+            } else {
+
+                println("Safe to come out.")
                 
             }
             
-            if !gameOver {
+            if self.nodeAtPoint(location) == self.reload {
                 
-                touchLocation = (touch.locationInView(self.view!).x * -1)+(self.size.height/2)
+                var backScene = GameScene(size:self.size)
+                self.scene!.view!.presentScene(backScene)
+                
+                println("Loaded Game")
+                
+            }
+            
+            if self.nodeAtPoint(location) == self.hide {
+                
+                nicole.hidden = true
                 
             }
             
@@ -374,9 +409,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
     }
     
+    func cancelHide() {
+        
+        nicole.hidden = false
+        nicole.removeAllActions()
+        
+    }
+    
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         
         cancelMoves()
+        cancelHide()
+        
     }
     
     func cleanScreen() {
@@ -413,7 +457,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             timeShow.fontName = "copperplate"
             timeShow.position = CGPointMake(25, 50)
             timeShow.zPosition = 3.0
-            self.addChild(timeShow)
             
             timeNode.removeFromParent()
             harpx.removeFromParent()
@@ -425,7 +468,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             loadLB.fontName = "copperplate"
             loadLB.position = CGPointMake(25, 10)
             loadLB.zPosition = 4.0
+            
+            reload = SKLabelNode(text: "Try Again?")
+            reload.fontColor = UIColor.redColor()
+            reload.fontSize = 24;
+            reload.fontName = "copperplate"
+            reload.position = CGPointMake(-25, -50)
+            reload.zPosition = 5.0
+            
+            self.addChild(timeShow)
             self.addChild(loadLB)
+            self.addChild(reload)
             
             println("Game Over")
             
@@ -509,22 +562,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if self.fireIt{
             let missileSpeed:CGFloat = 50
             let blastRadius = 25
-            var dX = (harpx.position.x - fire.position.x)
-            var dY = (harpx.position.y - fire.position.y)
             
-            let action = SKAction.moveBy(CGVectorMake(dX, dY), duration: 1.0)
+            let action = SKAction.moveToX(1000,  duration: 3.0)
             
             self.fire.runAction(action)
             
-            if (Int(abs(dX)) < blastRadius) && (Int(abs(dY)) < blastRadius){
-                
-                fire.position = harpx.position
-                let action = SKAction.moveToX(1000, duration: 1.0)
-                //harpx.physicsBody!.velocity = CGVectorMake(100,100)
-                harpx.runAction(action)
-                fire.runAction(action)
-                
-            }
         }
         
     }
