@@ -40,7 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var percentComplete : Double = 0
     var progressInLevelAchievement = Bool()
     var hide = SKLabelNode()
-    let fire = SKSpriteNode(imageNamed: "harpx")
+    let fire = SKSpriteNode(imageNamed: "harpoonbomb1")
     var fireIt = false
     var reload = SKLabelNode()
     
@@ -315,9 +315,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         var nicoleAtlas = SKTextureAtlas(named: "BNicole")
         
-        for i in 1...2 {
+        for i in 1...6 {
             
-            var textureName = "BNicoleRun0"
+            var textureName = "BNicoleRun\(i)"
             var temp = nicoleAtlas.textureNamed(textureName)
             runningNicoleTextures.append(temp)
             
