@@ -56,6 +56,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
         
+        self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        
         self.physicsWorld.contactDelegate = self
         
         endOfScreenLeft = (self.size.width / 2) * CGFloat(-1)
