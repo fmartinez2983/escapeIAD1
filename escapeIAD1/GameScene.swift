@@ -463,6 +463,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             timeNode.removeFromParent()
             harpx.removeFromParent()
             nicole.removeFromParent()
+            nicole.removeAllActions()
             
             loadLB = SKLabelNode(text: "Tap for Leaderboard")
             loadLB.fontColor = UIColor.redColor()
