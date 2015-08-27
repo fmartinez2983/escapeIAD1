@@ -130,6 +130,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             timeHide()
             reloadGame()
             
+            identifier = "ETF005"
+            percentComplete = 100.0
+            
+            let achievement = GKAchievement(identifier: identifier)
+            
+            GKAchievement.loadAchievementsWithCompletionHandler{(achievement, var error) in
+                
+                if (error != nil) {
+                    
+                    println("nothing is happening")
+                    
+                }
+            }
+
+            
             println("ROAR! Game Over")
             
         }
@@ -483,6 +498,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             self.addChild(loadLB)
             self.addChild(reload)
             
+            identifier = "ETF006"
+            percentComplete = 100.0
+            
+            let achievement = GKAchievement(identifier: identifier)
+            
+            GKAchievement.loadAchievementsWithCompletionHandler{(achievement, var error) in
+                
+                if (error != nil) {
+                    
+                    println("nothing is happening")
+                    
+                }
+            }
+            
             println("Game Over")
             
         }
@@ -660,7 +689,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             }
         }
     }
-    
+/*
     func checkAchievements() {
 
         switch(timeScore)
@@ -732,6 +761,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             })
         }
     }
+*/
     
     let gameCenterPlayer=GKLocalPlayer.localPlayer()
     
